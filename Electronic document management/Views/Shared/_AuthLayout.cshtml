@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div>@RenderBody()</div>
+    <div>
+        Не зарегестрированы? <a href="register">Регистрация</a>
+        <div>
+            <form method="post">
+                <h3>Форма входа</h3>
+                <p>
+                    <label>Логин</label>
+                    <input type="text" name="userName" required></input>
+                </p>
+                <p>
+                    <label>Пароль</label>
+                    <input type="text" name="password" required></input>
+                </p>
+                <p>
+                    <input type="submit" value="Отправить"></input>
+                </p>
+            </form>
+        </div>
+</body>
+</html>

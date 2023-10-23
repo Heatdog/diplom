@@ -1,0 +1,12 @@
+﻿@using Electronic_document_management.Models;
+
+@model IEnumerable<User>;
+@{
+    ViewBag.Title = "Users page";
+    Layout = "_Layout";
+}
+<h3>Список пользователей</h3>
+@foreach (var user in Model)
+{
+    <h3>@user.Name + @user.Role</h3>
+}

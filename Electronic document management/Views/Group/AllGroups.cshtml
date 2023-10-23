@@ -1,0 +1,17 @@
+﻿@using Electronic_document_management.Models;
+@using System;
+
+@model IEnumerable<Department>;
+@{
+    ViewBag.Title = "Groups page";
+    Layout = "_Layout";
+}
+@if (String.Compare(User.FindFirst("role")?.Value, Role.Admin.ToString()) == 0)
+{
+    <a href="groups/create">Создать</a>
+}
+<h3>Список Отделов</h3>
+@foreach (var dep in Model)
+{
+    <h3>@dep.Name</h3>
+}

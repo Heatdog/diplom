@@ -1,0 +1,16 @@
+﻿@using System.Security.Claims
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>TestWebSite.com | @ViewBag.Title</title>
+</head>
+<body>
+    <div>
+        <a href="/">Главная страница</a> | <a href="/profile">Пользователи</a> | <a href="/groups">Отделы</a> | <a href="/profile/@User.FindFirst("id")?.Value">@User.FindFirst("username")?.Value</a> | <a href="/logout">Выйти</a>
+    <div>
+        @RenderBody()
+    </div>
+</body>
+</html>

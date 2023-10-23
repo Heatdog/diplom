@@ -1,0 +1,55 @@
+﻿@using Electronic_document_management.ViewModels.Register;
+
+@model RegisterModel
+@{
+    ViewBag.Title = "Register page";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>"Register page"</title>
+</head>
+<body>
+    <div>@if (Model.AuthResult != null) @Model.AuthResult.Message?.Msg</div>
+    <div>Уже есть аккаунт? <a href="login">Войти</a>
+    <div>
+            <form method="post">
+                <h3>Форма регистрации</h3>
+                <p>
+                    <label>Логин</label>
+                    <input type="text" name="userName" required></input>
+                </p>
+                <p>
+                    <label>Электронная почта</label>
+                    <input type="email" name="email" required></input>
+                </p>
+                <p>
+                    <label>Имя</label>
+                    <input type="text" name="name" required></input>
+                </p>
+                <p>
+                    <label>Фамилия</label>
+                    <input type="text" name="surname" required></input>
+                </p>
+                <p>
+                    <label>Отдел</label>
+                    <select name="department">
+                        @foreach (var dp in Model.Departments)
+                        {
+                            <option>@dp.Name</option>
+                        }
+                    </select>
+                </p>
+                <p>
+                    <label>Пароль</label>
+                    <input type="text" name="password" required></input>
+                </p>
+                <p>
+                    <input type="submit" value="Отправить"></input>
+                </p>
+            </form>
+
+    </div>
+</body>
+</html>

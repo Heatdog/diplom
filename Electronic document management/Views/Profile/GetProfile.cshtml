@@ -1,0 +1,20 @@
+﻿@using Electronic_document_management.Models;
+
+@model User
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Profile page";
+}
+
+<h3>Логин: @Model.UserName</h3>
+<h3>Имя: @Model.Name</h3>
+<h3>Фамилия: @Model.Surname</h3>
+<h3>Отдел: </h3> @if (Model.Department != null)
+{
+    <h3>@Model.Department?.Name</h3>
+}
+else
+{
+    <h3>Отдел не прикреплён</h3>
+}
