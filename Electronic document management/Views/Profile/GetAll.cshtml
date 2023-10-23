@@ -5,8 +5,31 @@
     ViewBag.Title = "Users page";
     Layout = "_Layout";
 }
-<h3>Список пользователей</h3>
-@foreach (var user in Model)
-{
-    <h3>@user.Name + @user.Role</h3>
-}
+<table>
+    <caption>Список пользователей</caption>
+    <tr>
+        <th>№</th>
+        <th>Логин</th>
+        <th>Фамилия</th>
+        <th>Имя</th>
+        <th>Почта</th>
+        <th>Отдел</th>
+        <th>Роль</th>
+    </tr>
+    @{
+        int i = 0;
+        foreach (var user in Model)
+        {
+        <tr>
+            <td>@(++i)</td>
+            <td><a href="/profile/@user.Id">@user.UserName</a></td>
+            <td>@user.Surname</td>
+            <td>@user.Name</td>
+            <td>@user.Email</td>
+            <td>@user.Department?.Name</td>
+            <td>@user.Role</td>
+            
+        </tr>
+        }
+    }
+</table>

@@ -20,14 +20,14 @@ namespace Electronic_document_management.Controllers.Group
             return View(await _repo.GetDepartmentsAsync());
         }
         [HttpGet, Route("{id:int}")]
-        public string GetGroup(int id)
+        public async Task<IActionResult> GetGroup(int id)
         {
-            return "get groupe: " + $"{id}";
+            return View(await _repo.GetDepartmentWithUsersAsync(id));
         }
-        [HttpGet, Route("invite")]
+        [HttpGet, Route("invite"), JwtAuthFilter("role", "Admin", "HeadOfDepartment")]
         public string InviteUser()
         {
-            return "invte user in groupe";
+            return "invite";
         }
         [HttpGet, Route("create"), JwtAuthFilter("role", "Admin")]
         public IActionResult CreateGroup()

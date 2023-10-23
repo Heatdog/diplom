@@ -16,6 +16,12 @@ namespace Electronic_document_management.Services.Repository.Repos
         {
             return await db.Users.ToListAsync();
         }
+        public async Task<IEnumerable<User>> GetUsersWithDepAsync()
+        {
+            return await db.Users
+                .Include(user => user.Department)
+                .ToListAsync();
+        }
         public async Task<User?> GetUserAsync(string userName)
         {
             return await db.Users
@@ -54,6 +60,13 @@ namespace Electronic_document_management.Services.Repository.Repos
             return await db.Departments
                 .Include(dep => dep.Users)
                 .FirstOrDefaultAsync(dp => dp.Name == departmentName);
+        }
+
+        public async Task<Department?> GetDepartmentWithUsersAsync(int id)
+        {
+            return await db.Departments
+                .Include(dep => dep.Users)
+                .FirstOrDefaultAsync(dp => dp.DepartmentId == id);
         }
 
         public async Task<Errors> AddDepartmentAsync(Department department)

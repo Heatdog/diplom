@@ -10,8 +10,20 @@
 {
     <a href="groups/create">Создать</a>
 }
-<h3>Список Отделов</h3>
-@foreach (var dep in Model)
-{
-    <h3>@dep.Name</h3>
-}
+<table>
+    <caption>Отделы</caption>
+    <tr>
+        <th>№</th>
+        <th>Название</th>
+    </tr>
+    @{
+        int i = 0;
+        foreach (var dep in Model)
+        {
+            <tr>
+                <td>@(++i)</td>
+                <td><a href="groups/@dep.DepartmentId">@dep.Name</a></td>
+            </tr>
+        }
+    }
+</table>

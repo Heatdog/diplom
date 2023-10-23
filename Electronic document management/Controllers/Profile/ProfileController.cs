@@ -2,6 +2,7 @@
 using Electronic_document_management.Services.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Electronic_document_management.Controllers.Profile
 {
@@ -17,7 +18,7 @@ namespace Electronic_document_management.Controllers.Profile
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return View(await _repo.GetUsersAsync());
+            return View(await _repo.GetUsersWithDepAsync());
         }
         [HttpGet, Route("{id:int}")]
         public async Task<IActionResult> GetProfile(int id)
@@ -27,9 +28,13 @@ namespace Electronic_document_management.Controllers.Profile
         }
 
         [HttpGet, Route("{id:int}/settings")]
-        public string GetSttings(int id)
+        public async Task<IActionResult> GetSttings(int id)
         {
-            return "settings of profile: " + $"{id}";
+            if (HttpContext.User.Claims.Any(claim => claim.Type == "id" && claim.Value != id.ToString()))
+            {
+                return new ForbidResult();
+            }
+            return View(await _repo.GetUserAsync(id));
         }
     }
 }

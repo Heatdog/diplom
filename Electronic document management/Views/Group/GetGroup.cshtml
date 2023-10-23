@@ -1,0 +1,27 @@
+﻿@using Electronic_document_management.Models;
+@model Department;
+
+@{
+    ViewBag.Title = "Get group page";
+    Layout = "_Layout";
+}
+
+<table>
+    <caption>@Model.Name</caption>
+    <tr>
+        <th>№</th>
+        <th>Пользователь</th>
+        <th>Роль</th>
+    </tr>
+    @{
+        int i = 0;
+        foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@(++i)</td>
+                <td><a href="/profile/@user.Id">@user.UserName</a></td>
+                <td>@user.Role</td>
+            </tr>
+        }
+    }
+</table>

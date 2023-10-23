@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Electronic document management", "Electronic document management\Electronic document management.csproj", "{FE509564-247A-479A-88C1-684A3DC390D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Electronic document management.Tests", "Electronic document management.Tests\Electronic document management.Tests.csproj", "{5876A833-6D94-4492-A364-BD8AF864CA71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Electronic document management.Tests", "Electronic document management.Tests\Electronic document management.Tests.csproj", "{5876A833-6D94-4492-A364-BD8AF864CA71}"
 	ProjectSection(ProjectDependencies) = postProject
 		{FE509564-247A-479A-88C1-684A3DC390D8} = {FE509564-247A-479A-88C1-684A3DC390D8}
 	EndProjectSection

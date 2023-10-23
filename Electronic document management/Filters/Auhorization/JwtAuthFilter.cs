@@ -8,8 +8,8 @@ namespace Electronic_document_management.Filters.Auhorization
     public class JwtAuthFilter : Attribute, IAuthorizationFilter
     {
         private readonly string? _claimType;
-        private readonly string? _claimValue;
-        public JwtAuthFilter(string claimType, string claimValue)
+        private readonly IEnumerable<string>? _claimValue;
+        public JwtAuthFilter(string claimType, params string[] claimValue)
         {
             _claimType = claimType;
             _claimValue = claimValue;
@@ -37,17 +37,24 @@ namespace Electronic_document_management.Filters.Auhorization
                 }
                 else
                 {
-                    
-                    if (_claimType != null && _claimValue != null)
+                    if (_claimType != null && _claimValue != null && _claimValue.Count() != 0)
                     {
-                        var hasClaim = res.Item2?.Any(c => c.Type == _claimType && c.Value == _claimValue);
-                        if (!(bool)hasClaim!)
+                        bool? hasClaim = false;
+                        foreach (var claimValue in _claimValue)
                         {
-                            filterContext.Result = new ForbidResult();
+                            hasClaim = res.Item2?.Any(c => c.Type == _claimType && c.Value == claimValue);
+                            if ((bool)hasClaim!)
+                            {
+                                filterContext.HttpContext.User.AddIdentity(new ClaimsIdentity(res.Item2));
+                                return;
+                            }
                         }
+                        filterContext.Result = new ForbidResult();
                     }
-                    
-                    filterContext.HttpContext.User.AddIdentity(new ClaimsIdentity(res.Item2));
+                    else
+                    {
+                        filterContext.HttpContext.User.AddIdentity(new ClaimsIdentity(res.Item2));
+                    }
                 }
             }
         }
