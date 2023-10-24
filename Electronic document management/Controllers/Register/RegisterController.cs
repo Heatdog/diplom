@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Electronic_document_management.ViewModels.Register;
 using Electronic_document_management.Services.AuthService;
-using Electronic_document_management.Services.Repository;
-using Microsoft.AspNetCore.Authentication;
+using Electronic_document_management.Services.RepositoryService.Interfaces;
 
 namespace Electronic_document_management.Controllers.Register
 {
     [Controller, Route("register")]
     public class RegisterController : Controller
     {
-        private IRepository _repo;
+        private IDepartmentRepository _repo;
         private IAuthService _authService;
-        public RegisterController(IRepository repo, IAuthService authService)
+        public RegisterController(IDepartmentRepository repo, IAuthService authService)
         {
             _repo = repo;
             _authService = authService;
@@ -28,14 +27,13 @@ namespace Electronic_document_management.Controllers.Register
         public async Task<IActionResult> Register(string userName, string email, string name,
             string surname, string department, string password)
         {
-            var res = await _authService.SignUp(userName, email, name, surname, department, password);
-            if (!res.Success) 
+            var error = await _authService.SignUp(userName, email, name, surname, department, password);
+            if (error != Models.Errors.None)
             {
                 var list = await _repo.GetDepartmentsAsync();
-                return View(new RegisterModel(res, list));
+                return View(new RegisterModel(new Models.AuthResult(error), list));
             }
-            await HttpContext.SignInAsync(res.ClaimsPrincipal!);
-            return Redirect("/");
+            return View("Wait", email);
         }
     }
 }

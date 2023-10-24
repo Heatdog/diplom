@@ -23,6 +23,9 @@
                 case Errors.SaveDbError:
                     Msg = "Ошибка базы данных!";
                     break;
+                case Errors.NotVerified:
+                    Msg = "Пользователь проходит проверку учётных данных";
+                    break;
             }
         }
 }
@@ -34,5 +37,6 @@ public enum Errors
     InvalidDepartment,
     InvalidEmailAddress,
     SaveDbError,
+    NotVerified 
 }
 }

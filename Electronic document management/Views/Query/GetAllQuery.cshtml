@@ -1,0 +1,50 @@
+﻿@using Electronic_document_management.Models;
+@using System.Security.Claims
+@model IEnumerable<Query>;
+
+@{
+    ViewBag.Title = "Query page";
+    Layout = "_Layout";
+}
+
+<form method="post">
+<table>
+    <caption>Запросы</caption>
+    <tr>
+        <th>№</th>
+        <th>Пользователь</th>
+        <th>Отдел</th>
+        <th>Время запроса</th>
+        <th>Роль</th>
+    </tr>
+    @{
+        int i = 0;
+        foreach (var query in Model)
+        {
+            <tr>
+                <td>@(++i)</td>
+                <td><a href="profile/@query.User.Id">@query.User.UserName</a></td>
+                <td><a href="groups/@query.Department.DepartmentId">@query.Department.Name</a></td>
+                <td>@query.User.Created</td>
+                <td>
+                        <select name="role">
+                        <option>Worker</option>
+                        @{
+                            if (User.FindFirst(ClaimTypes.Role)?.Value == "Admin")
+                            {
+                                <option>HeadOfDepartment</option>
+                            }
+                        }
+                    </select>
+                </td>
+                <td>
+                        <input type="submit" value="Подвтердить" name="save:@query.Id" />
+                </td>
+                <td>
+                        <input type="submit" value="Удалить" name="cancel:@query.Id" />
+                </td>
+            </tr>
+        }
+    }
+</table>
+</form>

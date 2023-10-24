@@ -1,15 +1,14 @@
-﻿using Electronic_document_management.Services.Repository;
+﻿using Electronic_document_management.Services.RepositoryService.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Electronic_document_management.Controllers.Profile
 {
     [Controller, Route("profile"), Authorize]
     public class ProfileController : Controller
     {
-        private IRepository _repo;
-        public ProfileController(IRepository repo)
+        private IUserRepository _repo;
+        public ProfileController(IUserRepository repo)
         {
             _repo = repo;
         }
@@ -17,12 +16,12 @@ namespace Electronic_document_management.Controllers.Profile
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return View(await _repo.GetUsersWithDepAsync());
+            return View((await _repo.GetUsersWithDepartmentAsync()).Where(user => user.IsConfirmed == true));
         }
         [HttpGet, Route("{id:int}")]
         public async Task<IActionResult> GetProfile(int id)
         {
-            var user = await _repo.GetUserAsync(id);
+            var user = await _repo.GetUserWithDepartmentAsync(id);
             return View(user);
         }
 
@@ -34,7 +33,7 @@ namespace Electronic_document_management.Controllers.Profile
                 return new ForbidResult();
             }
 
-            return View(await _repo.GetUserAsync(id));
+            return View(await _repo.GetUserWithDepartmentAsync(id));
         }
     }
 }

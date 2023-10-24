@@ -1,5 +1,5 @@
 ﻿using Electronic_document_management.Models;
-using Electronic_document_management.Services.Repository;
+using Electronic_document_management.Services.RepositoryService.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,8 +8,8 @@ namespace Electronic_document_management.Controllers.Group
     [Controller, Route("groups"), Authorize]
     public class GroupController : Controller
     {
-        IRepository _repo;
-        public GroupController(IRepository repo)
+        IDepartmentRepository _repo;
+        public GroupController(IDepartmentRepository repo)
         {
             _repo = repo;
         }
@@ -22,11 +22,6 @@ namespace Electronic_document_management.Controllers.Group
         public async Task<IActionResult> GetGroup(int id)
         {
             return View(await _repo.GetDepartmentWithUsersAsync(id));
-        }
-        [HttpGet, Route("invite"), Authorize(Roles = "Admin, HeadOfDepartment")]
-        public string InviteUser()
-        {
-            return "invite";
         }
         [HttpGet, Route("create"), Authorize(Roles = "Admin")]
         public IActionResult CreateGroup()

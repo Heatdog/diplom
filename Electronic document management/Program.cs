@@ -2,7 +2,8 @@ using Electronic_document_management.Services.AuthService;
 using Electronic_document_management.Services.Claims;
 using Electronic_document_management.Services.Databases;
 using Electronic_document_management.Services.PasswordHasher;
-using Electronic_document_management.Services.Repository;
+using Electronic_document_management.Services.RepositoryService.Interfaces;
+using Electronic_document_management.Services.RepositoryService.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -33,9 +34,11 @@ class Programm
         builder.Services.AddAuthorization();
         
 
-        builder.Services.AddTransient<IRepository, Repository>();
+        builder.Services.AddTransient<IUserRepository, UserRepository>();
+        builder.Services.AddTransient<IDepartmentRepository, DepartmentRepository>();
         builder.Services.AddTransient<IClaimService, ClaimService>();
         builder.Services.AddTransient<IAuthService, AuthService>();
+        builder.Services.AddTransient<IQueryRepository, QueryRepository>();
         builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
         
         var app = builder.Build();

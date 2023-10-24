@@ -8,7 +8,18 @@
 </head>
 <body>
     <div>
-        <a href="/">Главная страница</a> | <a href="/profile">Пользователи</a> | <a href="/groups">Отделы</a> | <a href="/profile/@User.FindFirst(ClaimTypes.NameIdentifier)?.Value">@User.FindFirst(ClaimTypes.Name)?.Value</a> | <a href="/logout">Выйти</a>
+        <a href="/">Главная страница</a> 
+        | <a href="/profile">Пользователи</a> 
+        | <a href="/groups">Отделы</a> 
+        @{
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (role != null && (role == "Admin" || role == "HeadOfDepartment"))
+            {
+                <a> | <a href="/query">Запросы</a> </a>
+            }
+        }
+        | <a href="/profile/@User.FindFirst(ClaimTypes.NameIdentifier)?.Value">@User.FindFirst(ClaimTypes.Name)?.Value</a>
+        | <a href="/logout">Выйти</a>
     <div>
         @RenderBody()
     </div>

@@ -16,6 +16,5 @@ namespace Electronic_document_management.Models
         public int DepartmentId { get; set; }
         public string Name { get; set; }
         public List<User> Users { get; set; }
-
     }
 }

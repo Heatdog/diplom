@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Electronic_document_management.Models
 {
@@ -9,7 +7,7 @@ namespace Electronic_document_management.Models
     {
         public User() { }
         public User(string userName, string name, string surname, string email, 
-            string password, Role role = Role.Worker)
+            string password, bool isConfirmed, Role role = Role.Worker)
         {
             UserName = userName;
             Name = name;
@@ -19,11 +17,12 @@ namespace Electronic_document_management.Models
             Role = role;
             Department = null;
             DepartmentId = null;
+            IsConfirmed = isConfirmed;
         }
         
         public User(string userName, string name, string surname, string email,
-            string password, Role role, Department department)
-            :this(userName, name, surname, email, password, role)
+            string password, bool isConfirmed, Role role, Department department)
+            :this(userName, name, surname, email, password, isConfirmed, role)
         {
             Department = department;
             DepartmentId = department.DepartmentId;
@@ -44,5 +43,7 @@ namespace Electronic_document_management.Models
         [ForeignKey("Department")]
         public int? DepartmentId { get; set; }
         public Department? Department { get; set; }
+        public bool IsConfirmed { get; set; }
+        public DateTime Created { get; set; }
     }
 }
