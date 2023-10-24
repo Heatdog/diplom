@@ -1,12 +1,11 @@
-﻿using Electronic_document_management.Filters.Auhorization;
-using Electronic_document_management.Services.Repository.Interfaces;
+﻿using Electronic_document_management.Services.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace Electronic_document_management.Controllers.Profile
 {
-    [Controller, Route("profile"), JwtAuthFilter]
+    [Controller, Route("profile"), Authorize]
     public class ProfileController : Controller
     {
         private IRepository _repo;
@@ -34,6 +33,7 @@ namespace Electronic_document_management.Controllers.Profile
             {
                 return new ForbidResult();
             }
+
             return View(await _repo.GetUserAsync(id));
         }
     }

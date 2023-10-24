@@ -1,4 +1,4 @@
-﻿namespace Electronic_document_management.Services.PasswordHasher.Interfaces
+﻿namespace Electronic_document_management.Services.PasswordHasher
 {
     public interface IPasswordHasher
     {

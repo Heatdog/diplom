@@ -1,7 +1,9 @@
-﻿using Electronic_document_management.Services.Auth.Interfaces;
-using Electronic_document_management.Services.Repository.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Electronic_document_management.ViewModels.Register;
+using Electronic_document_management.Services.AuthService;
+using Electronic_document_management.Services.Repository;
+using Microsoft.AspNetCore.Authentication;
+
 namespace Electronic_document_management.Controllers.Register
 {
     [Controller, Route("register")]
@@ -32,7 +34,7 @@ namespace Electronic_document_management.Controllers.Register
                 var list = await _repo.GetDepartmentsAsync();
                 return View(new RegisterModel(res, list));
             }
-            Response.Cookies.Append("accessToken", res.AccessToken!);
+            await HttpContext.SignInAsync(res.ClaimsPrincipal!);
             return Redirect("/");
         }
     }

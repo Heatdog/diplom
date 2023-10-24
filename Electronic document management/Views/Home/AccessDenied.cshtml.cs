@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Electronic_document_management.Views.Login
+namespace Electronic_document_management.Views.Home
 {
-    public class SuccessModel : PageModel
+    public class AccessDeniedModel : PageModel
     {
         public void OnGet()
         {

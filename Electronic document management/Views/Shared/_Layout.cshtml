@@ -8,7 +8,7 @@
 </head>
 <body>
     <div>
-        <a href="/">Главная страница</a> | <a href="/profile">Пользователи</a> | <a href="/groups">Отделы</a> | <a href="/profile/@User.FindFirst("id")?.Value">@User.FindFirst("username")?.Value</a> | <a href="/logout">Выйти</a>
+        <a href="/">Главная страница</a> | <a href="/profile">Пользователи</a> | <a href="/groups">Отделы</a> | <a href="/profile/@User.FindFirst(ClaimTypes.NameIdentifier)?.Value">@User.FindFirst(ClaimTypes.Name)?.Value</a> | <a href="/logout">Выйти</a>
     <div>
         @RenderBody()
     </div>

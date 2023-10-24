@@ -1,9 +1,8 @@
 ﻿using Electronic_document_management.Models;
 using Electronic_document_management.Services.Databases;
-using Electronic_document_management.Services.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Electronic_document_management.Services.Repository.Repos
+namespace Electronic_document_management.Services.Repository
 {
     public class Repository : IRepository
     {
@@ -44,7 +43,8 @@ namespace Electronic_document_management.Services.Repository.Repos
             try
             {
                 await db.SaveChangesAsync();
-            }catch (Exception)
+            }
+            catch (Exception)
             {
                 return Errors.SaveDbError;
             }
@@ -77,7 +77,8 @@ namespace Electronic_document_management.Services.Repository.Repos
             try
             {
                 await db.SaveChangesAsync();
-            }catch (Exception)
+            }
+            catch (Exception)
             {
                 return Errors.SaveDbError;
             }

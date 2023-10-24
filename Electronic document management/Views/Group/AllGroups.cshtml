@@ -1,12 +1,13 @@
 ﻿@using Electronic_document_management.Models;
 @using System;
+@using System.Security.Claims;
 
 @model IEnumerable<Department>;
 @{
     ViewBag.Title = "Groups page";
     Layout = "_Layout";
 }
-@if (String.Compare(User.FindFirst("role")?.Value, Role.Admin.ToString()) == 0)
+@if (String.Compare(User.FindFirst(ClaimTypes.Role)?.Value, Role.Admin.ToString()) == 0)
 {
     <a href="groups/create">Создать</a>
 }

@@ -1,21 +1,20 @@
-﻿using Electronic_document_management.Services.Auth.Interfaces;
-using Electronic_document_management.Models;
-using Electronic_document_management.Services.Repository.Interfaces;
-using Electronic_document_management.Services.Tokens.Interfaces;
-using Electronic_document_management.Services.PasswordHasher.Interfaces;
+﻿using Electronic_document_management.Models;
+using Electronic_document_management.Services.Claims;
+using Electronic_document_management.Services.PasswordHasher;
+using Electronic_document_management.Services.Repository;
 
-namespace Electronic_document_management.Services.Auth.Jwt
+namespace Electronic_document_management.Services.AuthService
 {
-    public class JwtAuthService : IAuthService
+    public class AuthService : IAuthService
     {
-        private readonly ITokenService _tokenService;
         private readonly IRepository _repo;
         private readonly IPasswordHasher _passwordHasher;
-        public JwtAuthService(ITokenService jwtAuthService, IRepository repository, IPasswordHasher passwordHasher) 
+        private readonly IClaimService _claimService;
+        public AuthService(IRepository repository, IPasswordHasher passwordHasher, IClaimService claimService)
         {
-            _tokenService = jwtAuthService;
             _repo = repository;
             _passwordHasher = passwordHasher;
+            _claimService = claimService;
         }
 
         public async Task<AuthResult> SignIn(string userName, string password)
@@ -30,18 +29,19 @@ namespace Electronic_document_management.Services.Auth.Jwt
                 return new AuthResult(Errors.InvalidArguments);
             if (!_passwordHasher.VerifyPassword(password, user.Password))
                 return new AuthResult(Errors.InvalidArguments);
-            return new AuthResult(user, _tokenService.BuildAccessToken(user));
+            return new AuthResult(user, _claimService.BuildClaims(user));
         }
 
         public async Task<AuthResult> SignUp(string userName, string email, string name,
-            string surname, string department, string password){
+            string surname, string department, string password)
+        {
             var dp = await _repo.GetDepartmentAsync(department);
             if (dp == null) return new AuthResult(Errors.InvalidDepartment);
             var user = new User(userName, name, surname, email, _passwordHasher.HashPassword(password), Role.Worker, dp);
             var res = await _repo.AddUserAsync(user);
             if (res != Errors.None)
                 return new AuthResult(res);
-            return new AuthResult(user, _tokenService.BuildAccessToken(user));
+            return new AuthResult(user, _claimService.BuildClaims(user));
         }
 
         public void SignOut(string cookie, Action<string> signOutFunc)

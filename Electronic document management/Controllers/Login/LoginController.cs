@@ -1,6 +1,6 @@
-﻿using Electronic_document_management.Filters.Auhorization;
-using Electronic_document_management.Services.Auth.Interfaces;
+﻿using Electronic_document_management.Services.AuthService;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,13 +27,13 @@ namespace Electronic_document_management.Controllers.Login
             {
                 return View("Login", res);
             }
-            Response.Cookies.Append("accessToken", res.AccessToken!);
+            await HttpContext.SignInAsync(res.ClaimsPrincipal!);
             return Redirect("/");
         }
-        [HttpGet, JwtAuthFilter]
-        public IActionResult Logout()
+        [HttpGet, Authorize]
+        public async Task<IActionResult> Logout()
         {
-            _authService.SignOut("accessToken", Response.Cookies.Delete);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Redirect("/login");
         }
     }

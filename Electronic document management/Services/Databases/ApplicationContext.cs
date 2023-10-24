@@ -1,5 +1,5 @@
 ﻿using Electronic_document_management.Models;
-using Electronic_document_management.Services.PasswordHasher.Interfaces;
+using Electronic_document_management.Services.PasswordHasher;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 

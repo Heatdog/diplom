@@ -1,12 +1,11 @@
-﻿using Electronic_document_management.Filters.Auhorization;
-using Electronic_document_management.Models;
-using Electronic_document_management.Services.Repository.Interfaces;
+﻿using Electronic_document_management.Models;
+using Electronic_document_management.Services.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Electronic_document_management.Controllers.Group
 {
-    [Controller, Route("groups"), JwtAuthFilter]
+    [Controller, Route("groups"), Authorize]
     public class GroupController : Controller
     {
         IRepository _repo;
@@ -24,17 +23,17 @@ namespace Electronic_document_management.Controllers.Group
         {
             return View(await _repo.GetDepartmentWithUsersAsync(id));
         }
-        [HttpGet, Route("invite"), JwtAuthFilter("role", "Admin", "HeadOfDepartment")]
+        [HttpGet, Route("invite"), Authorize(Roles = "Admin, HeadOfDepartment")]
         public string InviteUser()
         {
             return "invite";
         }
-        [HttpGet, Route("create"), JwtAuthFilter("role", "Admin")]
+        [HttpGet, Route("create"), Authorize(Roles = "Admin")]
         public IActionResult CreateGroup()
         {
             return View();
         }
-        [HttpPost, Route("create"), JwtAuthFilter("role", "Admin")]
+        [HttpPost, Route("create"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateGroup(string name)
         {
             var res = await _repo.AddDepartmentAsync(new Department(name));

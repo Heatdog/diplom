@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Filters\Resource\" />
-    <Folder Include="Filters\Action\" />
-    <Folder Include="Filters\Exception\" />
-    <Folder Include="Filters\Result\" />
     <Folder Include="Views\Docs\" />
     <Folder Include="Views\Message\" />
   </ItemGroup>

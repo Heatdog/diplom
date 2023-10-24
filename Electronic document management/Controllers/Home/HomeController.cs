@@ -1,15 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Electronic_document_management.Filters.Auhorization;
 
 namespace Electronic_document_management.Controllers.Home
 {
-    [Controller, Route("/"), JwtAuthFilter]
+    [Controller, Route("/")]
     public class HomeController : Controller
     {
-        [HttpGet]
+        [HttpGet, Authorize]
         public IActionResult Main()
         {
+            return View();
+        }
+        [HttpGet, Route("/accessdenied")]
+        public IActionResult AccessDenied()
+        {
+            Response.StatusCode = 403;
             return View();
         }
     }

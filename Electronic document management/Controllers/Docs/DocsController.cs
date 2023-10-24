@@ -1,10 +1,9 @@
-﻿using Electronic_document_management.Filters.Auhorization;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Electronic_document_management.Controllers.Docs
 {
-    [Controller, Route("docs"), JwtAuthFilter]
+    [Controller, Route("docs"), Authorize]
     public class DocsController : Controller
     {
         [HttpGet]

@@ -1,10 +1,9 @@
-﻿using Electronic_document_management.Filters.Auhorization;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Electronic_document_management.Controllers.Chat
 {
-    [Controller, Route("/chat"), JwtAuthFilter]
+    [Controller, Route("/chat"), Authorize]
     public class ChatController : Controller
     {
         [HttpGet]

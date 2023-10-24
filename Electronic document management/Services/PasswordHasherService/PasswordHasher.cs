@@ -1,8 +1,7 @@
-﻿using Electronic_document_management.Services.PasswordHasher.Interfaces;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Electronic_document_management.Services.PasswordHasher.Hasher
+namespace Electronic_document_management.Services.PasswordHasher
 {
     public class PasswordHasher : IPasswordHasher
     {
@@ -10,8 +9,8 @@ namespace Electronic_document_management.Services.PasswordHasher.Hasher
         private const int _saltSize = 16;
         private const int _iterations = 350000;
         private const char segmentDelimiter = ':';
-        private static  readonly HashAlgorithmName _algorithm = HashAlgorithmName.SHA256;
-        public string HashPassword(string password) 
+        private static readonly HashAlgorithmName _algorithm = HashAlgorithmName.SHA256;
+        public string HashPassword(string password)
         {
             byte[] salt = RandomNumberGenerator.GetBytes(_saltSize);
             var hash = Rfc2898DeriveBytes.Pbkdf2(

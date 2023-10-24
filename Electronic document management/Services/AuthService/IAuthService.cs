@@ -1,8 +1,6 @@
-﻿
+﻿using Electronic_document_management.Models;
 
-using Electronic_document_management.Models;
-
-namespace Electronic_document_management.Services.Auth.Interfaces
+namespace Electronic_document_management.Services.AuthService
 {
     public interface IAuthService
     {
