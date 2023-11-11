@@ -1,0 +1,27 @@
+﻿@using Electronic_document_management.ViewModels.Profile;
+
+@model ProfileModel;
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Setting page";
+}
+
+<form method="post">
+    <h3>Изменение почты</h3>
+    <h3>Пользователь @Model.User.UserName</h3>
+    @if (Model.Msg != null)
+    {
+        <h3>@Model.Msg</h3>
+    }
+    <p>
+        <h4>Текущая почта: @Model.User.Email</h4>
+    </p>
+    <p>
+        <label>Новая почта</label>
+        <input type="text" name="newEmail" required>
+    </p>
+    <p>
+        <input type="submit" value="Отправить">
+    </p>
+</form>

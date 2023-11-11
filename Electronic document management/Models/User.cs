@@ -6,8 +6,8 @@ namespace Electronic_document_management.Models
     public class User
     {
         public User() { }
-        public User(string userName, string name, string surname, string email, 
-            string password, bool isConfirmed, Role role = Role.Worker)
+        public User(string userName, string name, string surname, string email,
+            string password, bool isConfirmed, Role role, Department department)
         {
             UserName = userName;
             Name = name;
@@ -15,17 +15,10 @@ namespace Electronic_document_management.Models
             Password = password;
             Email = email;
             Role = role;
-            Department = null;
-            DepartmentId = null;
-            IsConfirmed = isConfirmed;
-        }
-        
-        public User(string userName, string name, string surname, string email,
-            string password, bool isConfirmed, Role role, Department department)
-            :this(userName, name, surname, email, password, isConfirmed, role)
-        {
             Department = department;
             DepartmentId = department.DepartmentId;
+            IsConfirmed = isConfirmed;
+            Docs = new List<Document>();
         }
         
         [Key]
@@ -41,9 +34,10 @@ namespace Electronic_document_management.Models
         public string Password { get; set; }
         public Role Role { get; set; }
         [ForeignKey("Department")]
-        public int? DepartmentId { get; set; }
-        public Department? Department { get; set; }
+        public int DepartmentId { get; set; }
+        public Department Department { get; set; }
         public bool IsConfirmed { get; set; }
         public DateTime Created { get; set; }
+        public List<Document> Docs { get; set; }
     }
 }

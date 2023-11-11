@@ -14,14 +14,14 @@ namespace Electronic_document_management.Controllers.Group
             _repo = repo;
         }
         [HttpGet]
-        public async Task<IActionResult> AllGroups()
+        public IActionResult AllGroups()
         {
-            return View(await _repo.GetDepartmentsAsync());
+            return View(_repo.GetDepartments());
         }
         [HttpGet, Route("{id:int}")]
-        public async Task<IActionResult> GetGroup(int id)
+        public IActionResult GetGroup(int id)
         {
-            return View(await _repo.GetDepartmentWithUsersAsync(id));
+            return View(_repo.GetDepartment(id));
         }
         [HttpGet, Route("create"), Authorize(Roles = "Admin")]
         public IActionResult CreateGroup()
@@ -29,9 +29,9 @@ namespace Electronic_document_management.Controllers.Group
             return View();
         }
         [HttpPost, Route("create"), Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateGroup(string name)
+        public IActionResult CreateGroup(string name)
         {
-            var res = await _repo.AddDepartmentAsync(new Department(name));
+            var res = _repo.SetDepartment(new Department(name));
             if (res != Errors.None)
                 return View("CreateGroup", new ErrorMessage(res));
             else

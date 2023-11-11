@@ -12,40 +12,31 @@ namespace Electronic_document_management.Services.RepositoryService.Repository
         {
             this.db = db;
         }
-        public async Task<IEnumerable<User>> GetUsersAsync()
+        public IEnumerable<User> GetUsers()
         {
-            return await db.Users
-                .ToListAsync();
-        }
-        public async Task<IEnumerable<User>> GetUsersWithDepartmentAsync()
-        {
-            return await db.Users
+            return db.Users
                 .Include(user => user.Department)
-                .ToListAsync();
+                .ToList();
         }
-        public async Task<User?> GetUserWithDepartmentAsync(string userName)
+        public User? GetUserByUsername(string userName)
         {
-            return await db.Users
+            return db.Users
                 .Include(user => user.Department)
-                .FirstOrDefaultAsync(user => user.UserName == userName);
+                .FirstOrDefault(user => user.UserName == userName);
         }
-        public async Task<User?> GetUserWithDepartmentAsync(int userId)
+        public User? GetUser(int userId)
         {
-            return await db.Users
+            return db.Users
                 .Include(user => user.Department)
-                .FirstOrDefaultAsync(user => user.Id == userId);
+                .FirstOrDefault(user => user.Id == userId);
         }
-        public async Task<User?> GetUserAsync(string userName)
+        public User? GetUserByEmail(string email)
         {
-            return await db.Users
-                .FirstOrDefaultAsync(user => user.UserName == userName);
+            return db.Users
+                .Include(user => user.Department)
+                .FirstOrDefault(user => user.Email == email);
         }
-        public async Task<User?> GetUserAsync(int userId)
-        {
-            return await db.Users
-                .FirstOrDefaultAsync(user => user.Id == userId);
-        }
-        public async Task<Errors> AddUserAsync(User user)
+        public Errors SetUser(User user)
         {
             var userName = db.Users.FirstOrDefault(us => us.UserName == user.UserName);
             if (userName != null) return Errors.InvalidUser;
@@ -54,7 +45,7 @@ namespace Electronic_document_management.Services.RepositoryService.Repository
             db.Users.Add(user);
             try
             {
-                await db.SaveChangesAsync();
+                db.SaveChanges();
             }
             catch (Exception)
             {
@@ -62,20 +53,13 @@ namespace Electronic_document_management.Services.RepositoryService.Repository
             }
             return Errors.None;
         }
-        public Errors ConfirmUser(int userID, string role)
+        public Errors UpdateUser(User user)
         {
-            var user = db.Users.FirstOrDefault(u => u.Id == userID);
-            if (user == null) 
-            {
-                return Errors.InvalidUser;
-            }
-            else
-            {
-                user.Role = RoleTransform.RoleToEnum(role);
-                user.IsConfirmed = true;
-                db.SaveChanges();
-                return Errors.None;
-            }
+            var dbUser = db.Users.FirstOrDefault(us => us.Id == user.Id);
+            if (dbUser == null) return Errors.InvalidUser;
+            db.Users.Update(user);
+            db.SaveChanges();
+            return Errors.None;
         }
 
         public Errors RemoveUser(int userId)

@@ -12,32 +12,33 @@ namespace Electronic_document_management.Services.RepositoryService.Repository
         {
             this.db = db;
         }
-        public async Task<IEnumerable<Department>> GetDepartmentsAsync()
+        public IEnumerable<Department> GetDepartments()
         {
-            return await db.Departments.ToListAsync();
+            return db.Departments.ToList();
         }
 
-        public async Task<Department?> GetDepartmentAsync(string departmentName)
+        public Department? GetDepartment(string departmentName)
         {
-            return await db.Departments
-                .FirstOrDefaultAsync(dp => dp.Name == departmentName);
-        }
-
-        public async Task<Department?> GetDepartmentWithUsersAsync(int id)
-        {
-            return await db.Departments
+            return db.Departments
                 .Include(dep => dep.Users.Where(user => user.IsConfirmed == true))
-                .FirstOrDefaultAsync(dp => dp.DepartmentId == id);
+                .FirstOrDefault(dp => dp.Name == departmentName);
         }
 
-        public async Task<Errors> AddDepartmentAsync(Department department)
+        public Department? GetDepartment(int id)
+        {
+            return db.Departments
+                .Include(dep => dep.Users.Where(user => user.IsConfirmed == true))
+                .FirstOrDefault(dp => dp.DepartmentId == id);
+        }
+
+        public Errors SetDepartment(Department department)
         {
             if (db.Departments.FirstOrDefault(dep => dep.Name == department.Name) != null)
                 return Errors.InvalidDepartment;
             db.Departments.Add(department);
             try
             {
-                await db.SaveChangesAsync();
+                db.SaveChanges();
             }
             catch (Exception)
             {

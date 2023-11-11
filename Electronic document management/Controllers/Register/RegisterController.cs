@@ -17,10 +17,9 @@ namespace Electronic_document_management.Controllers.Register
         }
 
         [HttpGet]
-        public async Task<IActionResult> Register()
+        public IActionResult Register()
         {
-            var list = await _repo.GetDepartmentsAsync();
-            return View(new RegisterModel(null, list));
+            return View(new RegisterModel(null, _repo.GetDepartments()));
         }
 
         [HttpPost]
@@ -30,8 +29,7 @@ namespace Electronic_document_management.Controllers.Register
             var error = await _authService.SignUp(userName, email, name, surname, department, password);
             if (error != Models.Errors.None)
             {
-                var list = await _repo.GetDepartmentsAsync();
-                return View(new RegisterModel(new Models.AuthResult(error), list));
+                return View(new RegisterModel(new Models.AuthResult(error), _repo.GetDepartments()));
             }
             return View("Wait", email);
         }

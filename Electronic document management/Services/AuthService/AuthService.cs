@@ -2,6 +2,7 @@
 using Electronic_document_management.Services.Claims;
 using Electronic_document_management.Services.PasswordHasher;
 using Electronic_document_management.Services.RepositoryService.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace Electronic_document_management.Services.AuthService
 {
@@ -24,12 +25,10 @@ namespace Electronic_document_management.Services.AuthService
 
         public async Task<AuthResult> SignIn(string userName, string password)
         {
-            if (string.IsNullOrWhiteSpace(userName))
-                return new AuthResult(Errors.InvalidArguments);
-            if (string.IsNullOrWhiteSpace(password))
-                return new AuthResult(Errors.InvalidArguments);
+            if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
+                return new AuthResult(Errors.EmptyValue);
 
-            var user = await _repoUser.GetUserAsync(userName);
+            var user = _repoUser.GetUserByUsername(userName);
             if (user == null)
                 return new AuthResult(Errors.InvalidArguments);
             if (!user.IsConfirmed)
@@ -42,10 +41,29 @@ namespace Electronic_document_management.Services.AuthService
         public async Task<Errors> SignUp(string userName, string email, string name,
             string surname, string department, string password)
         {
-            var dp = await _repoDepartment.GetDepartmentAsync(department);
-            if (dp == null) return Errors.InvalidDepartment;
+            if (string.IsNullOrWhiteSpace(userName) ||
+                string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(name) ||
+                string.IsNullOrWhiteSpace(surname) ||
+                string.IsNullOrWhiteSpace(department) ||
+                string.IsNullOrWhiteSpace(password))
+                return Errors.EmptyValue;
+            string pattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
+            Regex regex = new Regex(pattern);
+            if (!regex.IsMatch(email))
+                return Errors.IncorrectEmail;
+
+            var dp = _repoDepartment.GetDepartment(department);
+            if (dp == null) 
+                return Errors.InvalidDepartment;
+
+            if (_repoUser.GetUserByUsername(userName) != null) 
+                return Errors.InvalidUser;
+            if (_repoUser.GetUserByEmail(email) != null) 
+                return Errors.InvalidEmailAddress;
+
             var user = new User(userName, name, surname, email, _passwordHasher.HashPassword(password), false, Role.Worker, dp);
-            await _queryRepository.AddQueryAsync(new Query(user, dp));
+            _queryRepository.AddQuery(new Query(user, dp));
             return Errors.None;
         }
 

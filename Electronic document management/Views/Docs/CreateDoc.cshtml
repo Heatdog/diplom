@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Create doc page";
+    Layout = "_Layout";
+}
+
+<div>
+    <form method="post">
+        <h3>Добавление документа</h3>
+        <p>
+            <label>Название</label>
+            <input type="text" name="name" required>
+        </p>
+        <p>
+            <label>Описание</label>
+            <input type="text" name="description" accept=".pdf" required>
+        </p>
+        <p>
+            <label>Файл</label>
+            <input type="file" multiple name="file" required>
+        </p>
+        <p>
+            <input type="submit" value="Отправить">
+        </p>
+    </form>
+</div>

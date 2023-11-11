@@ -1,0 +1,32 @@
+﻿@using Electronic_document_management.Models;
+
+@model IEnumerable<Document>;
+@{
+    ViewBag.Title = "Documents page";
+    Layout = "_Layout";
+}
+
+<a href="docs/create">Добавить документ</a>
+<table>
+    <caption>Документы</caption>
+    <tr>
+        <th>№</th>
+        <th>Название</th>
+        <th>Автор</th>
+        <th>Дата создания</th>
+        <th>Статус</th>
+    </tr>
+    @{
+        int i = 0;
+        foreach (var doc in Model)
+        {
+            <tr>
+                <td>@(++i)</td>
+                <td><a href="groups/@doc.Id">@doc.Name</a></td>
+                <td><a href="profile/@doc.AuthorId">@doc.Author.UserName</a></td>
+                <td>@doc.Created</td>
+                <td>@doc.Status</td>
+            </tr>
+        }
+    }
+</table>

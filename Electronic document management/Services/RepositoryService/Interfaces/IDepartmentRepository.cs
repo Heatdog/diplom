@@ -4,9 +4,9 @@ namespace Electronic_document_management.Services.RepositoryService.Interfaces
 {
     public interface IDepartmentRepository
     {
-        Task<IEnumerable<Department>> GetDepartmentsAsync();
-        Task<Department?> GetDepartmentAsync(string departmentName);
-        Task<Department?> GetDepartmentWithUsersAsync(int id);
-        Task<Errors> AddDepartmentAsync(Department department);
+        IEnumerable<Department> GetDepartments();
+        Department? GetDepartment(string departmentName);
+        Department? GetDepartment(int id);
+        Errors SetDepartment(Department department);
     }
 }

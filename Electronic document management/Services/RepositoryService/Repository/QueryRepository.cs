@@ -8,63 +8,47 @@ namespace Electronic_document_management.Services.RepositoryService.Repository
     public class QueryRepository : IQueryRepository
     {
         private ApplicationContext db;
-        private readonly IUserRepository _userRepository;
-        public QueryRepository(ApplicationContext db, IUserRepository userRepository)
+        public QueryRepository(ApplicationContext db)
         {
-            _userRepository = userRepository;
             this.db = db;
         }
-        public async Task<IEnumerable<Query>> GetQueriesAsync()
+        public IEnumerable<Query> GetQueries()
         {
-            return await db.Queries
+            return db.Queries
                 .Include(query => query.User)
                 .Include(query => query.Department)
-                .ToListAsync();
+                .ToList();
         }
-        public async Task<IEnumerable<Query>> GetQueriesByDepartmentAsync(int depId)
+        public IEnumerable<Query> GetQueries(int depId)
         {
-            return await db.Queries
+            return db.Queries
                 .Where(query => query.DepartmentId == depId)
                 .Include(query => query.User)
                 .Include (query => query.Department)
-                .ToListAsync();
+                .ToList();
         }
-        public async Task AddQueryAsync(Query query)
+        public void AddQuery(Query query)
         {
             db.Queries.Add(query);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
         }
 
-        public Errors ConfirmUser(int queryId, string role)
+        public bool RemoveQuery(int queryId)
         {
-            var query = db.Queries.Where(q => q.Id == queryId).FirstOrDefault();
+            var query = db.Queries.FirstOrDefault(query => query.Id == queryId);
             if (query == null)
-            {
-                return Errors.InvalidArguments;
-            }
-            var err = _userRepository.ConfirmUser(query.UserId, role);
-            if (err != Errors.None)
-            {
-                return err;
-            }
+                return false;
             db.Queries.Remove(query);
             db.SaveChanges();
-            return Errors.None;
+            return true;
         }
 
-        public Errors CancelUser(int queryId)
+        public Query? GetQuery(int queryId)
         {
-            var query = db.Queries.Where(q => q.Id == queryId).FirstOrDefault();
-            if (query == null)
-            {
-                return Errors.InvalidArguments;
-            }
-            var err = _userRepository.RemoveUser(query.UserId);
-            if (err != Errors.None)
-            {
-                return err;
-            }
-            return Errors.None;
+            return db.Queries
+                .Include (query => query.User)
+                .Include(query => query.Department)
+                .FirstOrDefault(query => query.Id == queryId);
         }
     }
 }

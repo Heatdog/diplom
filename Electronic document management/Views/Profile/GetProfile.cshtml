@@ -1,6 +1,7 @@
 ﻿@using Electronic_document_management.Models;
+@using System.Security.Claims;
 
-@model User
+@model User;
 
 @{
     Layout = "_Layout";
@@ -21,11 +22,24 @@
         <td>@Model.Surname</td>
     </tr>
     <tr>
+        <td>Почта</td>
+        <td>@Model.Email</td>
+    </tr>
+    <tr>
         <td>Отдел</td>
-        <td>@Model.Department?.Name</td>
+        <td>@Model.Department.Name</td>
     </tr>
     <tr>
         <td>Роль</td>
         <td>@Model.Role</td>
     </tr>
+        @{
+            if (User.FindFirst(ClaimTypes.NameIdentifier)?.Value == Model.Id.ToString())
+            {
+            <tr>
+                <td><a href="@Model.Id/password">Изменить пароль</a></td>
+                <td><a href="@Model.Id/email">Изменить почту</a></td>
+            </tr>
+            }
+        }
 </table>
