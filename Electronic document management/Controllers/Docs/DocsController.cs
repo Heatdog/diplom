@@ -11,10 +11,12 @@ namespace Electronic_document_management.Controllers.Docs
     {
         private readonly IDocumentRepository _docsRepo;
         private readonly IUserRepository _userRepo;
-        public DocsController(IDocumentRepository docsRepo, IUserRepository userRepository)
+        private readonly IFileRepository _fileRepo;
+        public DocsController(IDocumentRepository docsRepo, IUserRepository userRepository, IFileRepository fileRepo)
         {
             _docsRepo = docsRepo;
             _userRepo = userRepository;
+            _fileRepo = fileRepo;
         }
         [HttpGet]
         public IActionResult AllDocs()
@@ -43,16 +45,37 @@ namespace Electronic_document_management.Controllers.Docs
             return View();
         }
         [HttpPost, Route("create")]
-        public IActionResult CreateDoc(string name, string description)
+        public IActionResult CreateDoc(string name, string description, IFormFile uploadedFile)
         {
+            if (uploadedFile == null)
+                return View("CreateDoc");
+
             var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).First().Value;
             if (userId == null)
                 return new ForbidResult();
-            var user = _userRepo.GetUser(Convert.ToInt32(userId));
-            if (user == null)
+
+            var author = _userRepo.GetUser(Convert.ToInt32(userId));
+            if (author == null)
                 return new ForbidResult();
-            //var doc = new Document(name, file.Name, user, description);
-            return View();
+
+            var dep = author.Department;
+
+            var document = new Document(name, author, description);
+            var id = _docsRepo.InsertDocument(document);
+            if (id == null)
+            {
+                return View("CreateDoc");
+            }
+
+            string path = $"/Files/{dep.Name}/{id}/{uploadedFile.Name}";
+            var docFile = new DocumentFile(path, document);
+            var err = _fileRepo.InsertFile(docFile);
+            if (err != Errors.None)
+            {
+                return View("CreateDoc");
+            }
+
+            return Redirect("/docs");
         }
     }
 }

@@ -3,23 +3,19 @@
     Layout = "_Layout";
 }
 
-<div>
-    <form method="post">
-        <h3>Добавление документа</h3>
-        <p>
-            <label>Название</label>
-            <input type="text" name="name" required>
-        </p>
-        <p>
-            <label>Описание</label>
-            <input type="text" name="description" accept=".pdf" required>
-        </p>
-        <p>
-            <label>Файл</label>
-            <input type="file" multiple name="file" required>
-        </p>
-        <p>
-            <input type="submit" value="Отправить">
-        </p>
-    </form>
-</div>
+<h3>Выберите файл для загрузки</h3>
+<form asp-action="CreateDoc" asp-controller="Docs" method="post" enctype="multipart/form-data">
+    <p>
+        <label>Название</label>
+        <input type="text" name="name" /><br>
+    </p>
+    <p>
+        <label>Описание</label>
+        <input type="text" name="description" /><br>
+    </p>
+    <p>
+        <label>Файл документа</label>
+        <input type="file" name="uploadedFile" /><br>
+    </p>
+    <input type="submit" value="Загрузить" />
+</form>

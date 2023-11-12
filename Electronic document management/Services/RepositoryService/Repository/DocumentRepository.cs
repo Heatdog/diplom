@@ -25,5 +25,17 @@ namespace Electronic_document_management.Services.RepositoryService.Repository
                 .Include(doc => doc.Author)
                 .ToList();
         }
+        public int? InsertDocument(Document document)
+        {
+            db.Documents.Add(document);
+            try
+            {
+                db.SaveChanges();
+            }catch (Exception)
+            {
+                return null;
+            }
+            return document.Id;
+        }
     }
 }

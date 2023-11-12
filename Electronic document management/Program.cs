@@ -40,6 +40,7 @@ class Programm
         builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
         builder.Services.AddTransient<IQueryService, QueryService>();
         builder.Services.AddTransient<IDocumentRepository, DocumentRepository>();
+        builder.Services.AddTransient<IFileRepository, FileRepository>();
         
         var app = builder.Build();
 

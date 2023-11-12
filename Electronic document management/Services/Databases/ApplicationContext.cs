@@ -11,6 +11,7 @@ namespace Electronic_document_management.Services.Databases
         public DbSet<Department> Departments { get; set; } = null!;
         public DbSet<Query> Queries { get; set; } = null!;
         public DbSet<Document> Documents { get; set; } = null!;
+        public DbSet<DocumentFile> Files { get; set; } = null!;
         public ApplicationContext(DbContextOptions<ApplicationContext> options, IPasswordHasher passwordHasher)
             : base(options)
         {
@@ -40,6 +41,12 @@ namespace Electronic_document_management.Services.Databases
             modelBuilder.Entity<Document>()
                 .Property(doc => doc.Created)
                 .HasDefaultValueSql("NOW()");
+            modelBuilder.Entity<Document>()
+                .HasMany(doc => doc.DocumentFiles)
+                .WithOne(file => file.Doc)
+                .HasForeignKey(file => file.DocId)
+                .IsRequired(true);
+
 
             var mainDp = new Department("Главный отдел");
             mainDp.DepartmentId = 1;

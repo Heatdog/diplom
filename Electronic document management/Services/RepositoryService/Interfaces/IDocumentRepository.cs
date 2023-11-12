@@ -6,5 +6,6 @@ namespace Electronic_document_management.Services.RepositoryService.Interfaces
     {
         public IEnumerable<Document> GetDocuments(int depId);
         public IEnumerable<Document> GetDocuments();
+        public int? InsertDocument(Document document);
     }
 }
