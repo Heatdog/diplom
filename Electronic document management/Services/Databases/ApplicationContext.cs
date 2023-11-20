@@ -47,6 +47,10 @@ namespace Electronic_document_management.Services.Databases
                 .HasForeignKey(file => file.DocId)
                 .IsRequired(true);
 
+            modelBuilder.Entity<DocumentFile>()
+                .Property(file => file.TimeInsert)
+                .HasDefaultValueSql("NOW()");
+
 
             var mainDp = new Department("Главный отдел");
             mainDp.DepartmentId = 1;

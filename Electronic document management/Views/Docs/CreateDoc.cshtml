@@ -2,7 +2,13 @@
     ViewBag.Title = "Create doc page";
     Layout = "_Layout";
 }
+@using Electronic_document_management.ViewModels.Docs;
+@model DocsMessage
 
+@if (Model != null)
+{
+    <h3>@Model.Msg</h3>
+}
 <h3>Выберите файл для загрузки</h3>
 <form asp-action="CreateDoc" asp-controller="Docs" method="post" enctype="multipart/form-data">
     <p>
@@ -15,7 +21,7 @@
     </p>
     <p>
         <label>Файл документа</label>
-        <input type="file" name="uploadedFile" /><br>
+        <input type="file" name="uploadedFile" accept=".pdf"/><br>
     </p>
     <input type="submit" value="Загрузить" />
 </form>

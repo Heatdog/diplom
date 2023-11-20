@@ -1,6 +1,7 @@
 ﻿using Electronic_document_management.Models;
 using Electronic_document_management.Services.Databases;
 using Electronic_document_management.Services.RepositoryService.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Electronic_document_management.Services.RepositoryService.Repository
 {
@@ -22,6 +23,24 @@ namespace Electronic_document_management.Services.RepositoryService.Repository
                 return Errors.SaveDbError;
             }
             return Errors.None;
+        }
+        public bool RemoveFile(int fileId)
+        {
+            var file = db.Files.FirstOrDefault(f => f.Id == fileId);
+            if (file == null)
+            {
+                return false;
+            }
+            db.Files.Remove(file);
+            db.SaveChanges();
+            return true;
+        }
+
+        public DocumentFile? GetFile(int fileId)
+        {
+            return db.Files
+                .Include(f => f.Doc)
+                .FirstOrDefault(f => f.Id == fileId);
         }
     }
 }

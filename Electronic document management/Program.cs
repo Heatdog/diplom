@@ -1,6 +1,7 @@
 using Electronic_document_management.Services.AuthService;
 using Electronic_document_management.Services.Claims;
 using Electronic_document_management.Services.Databases;
+using Electronic_document_management.Services.FileService;
 using Electronic_document_management.Services.PasswordHasher;
 using Electronic_document_management.Services.QueryService;
 using Electronic_document_management.Services.RepositoryService.Interfaces;
@@ -41,6 +42,7 @@ class Programm
         builder.Services.AddTransient<IQueryService, QueryService>();
         builder.Services.AddTransient<IDocumentRepository, DocumentRepository>();
         builder.Services.AddTransient<IFileRepository, FileRepository>();
+        builder.Services.AddTransient<IFileService, FileService>();
         
         var app = builder.Build();
 

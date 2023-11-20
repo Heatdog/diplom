@@ -8,9 +8,9 @@ namespace Electronic_document_management.Models
         public DocumentFile() { }
         public DocumentFile(string path, Document doc) 
         {
-            Version = 1;
-            Path = path + Version.ToString();
+            Path = path;
             Doc = doc;
+            Version = doc.Version;
         }
         [Key]
         public int Id { get; set; }
@@ -19,5 +19,6 @@ namespace Electronic_document_management.Models
         public Document Doc { get; set; }
         [ForeignKey("Document")]
         public int DocId { get; set; }
+        public DateTime TimeInsert { get; set; }
     }
 }

@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "Add new version";
+    Layout = "_Layout";
+}
+
+<h3>Выберите файл для новой версии документа</h3>
+<form asp-action="AddNewVersion" asp-controller="Docs" method="post" enctype="multipart/form-data">
+    <p>
+        <label>Файл документа</label>
+        <input type="file" name="uploadedFile" accept=".pdf" /><br>
+    </p>
+    <input type="submit" value="Загрузить" />
+</form>

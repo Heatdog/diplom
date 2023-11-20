@@ -1,0 +1,40 @@
+﻿@using Electronic_document_management.Models;
+@using System.Security.Claims
+
+@model Document
+@{
+    ViewBag.Title = "Document page";
+    Layout = "_Layout";
+}
+@{
+    if (Model.AuthorId.ToString() == User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+    {
+        <a href="/docs/@Model.Id/add">Добавить новую версию</a>
+    }
+}
+
+<h3>@Model.Name</h3>
+Автор: <a href="/profile/@Model.Author.Id">@Model.Author.UserName</a>
+<br>Отдел: <a href="/groups/@Model.Author.DepartmentId">@Model.Author.Department.Name</a>
+<br>Дата создания документа: @Model.Created
+<br>Статус: @Model.Status
+<br>Последняя версия: @Model.Version
+<table>
+    <caption>История файлов документа</caption>
+    <tr>
+        <th>№</th>
+        <th>Версия документа</th>
+        <th>Дата добавления</th>
+    </tr>
+    @{
+        int i = 0;
+        foreach (var file in Model.DocumentFiles)
+        {
+            <tr>
+                <td>@(++i)</td>
+                <td><a href="/docs/@Model.Id/@file.Id">@file.Version</a></td>
+                <td>@file.TimeInsert</td>
+            </tr>
+        }
+    }
+</table>

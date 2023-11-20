@@ -13,6 +13,7 @@ namespace Electronic_document_management.Models
             Description = description;
             DocumentFiles = new List<DocumentFile>();
             Status = Status.InDeveloping;
+            Version = 1;
         }
         [Key]
         public int Id { get; set; }
@@ -24,6 +25,7 @@ namespace Electronic_document_management.Models
         public string Description { get; set; }
         public Status Status { get; set; }
         public IEnumerable<DocumentFile> DocumentFiles { get; set; }
+        public int Version { get; set; }
     }
 
     public enum Status
