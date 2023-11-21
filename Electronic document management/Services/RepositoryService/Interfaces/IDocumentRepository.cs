@@ -9,5 +9,7 @@ namespace Electronic_document_management.Services.RepositoryService.Interfaces
         public Document? GetDocument(int docId);
         public int? InsertDocument(Document document);
         public void UpdateDocumnet(Document document);
+        public IEnumerable<Document> SearchDocumnets(string text);
+        public IEnumerable<Document> SearchDocumnets(string text, int depId);
     }
 }

@@ -52,6 +52,32 @@ namespace Electronic_document_management.Controllers.Docs
             return View(res);
         }
 
+        [HttpPost]
+        public IActionResult SearchDoc(string searchText)
+        {
+            var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).First().Value;
+            if (userId == null)
+                return new ForbidResult();
+            var role = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.Role).First().Value;
+            if (role == null)
+                return new ForbidResult();
+
+            var user = _userRepo.GetUser(Convert.ToInt32(userId));
+            if (user == null)
+                return new ForbidResult();
+
+            IEnumerable<Document> res;
+            if (role == "Admin")
+            {
+                res = _docsRepo.SearchDocumnets(searchText);
+            }
+            else
+            {
+                res = _docsRepo.SearchDocumnets(searchText, user.DepartmentId);
+            }
+            return View("AllDocs", res);
+        }
+
         [HttpGet, Route("create")]
         public IActionResult CreateDoc()
         {
@@ -127,7 +153,45 @@ namespace Electronic_document_management.Controllers.Docs
                 return new ForbidResult();
             }
 
-            return View(_docsRepo.GetDocument(id));
+            return View(new DocumentAndUser(doc, user));
+        }
+
+        [HttpPost, Route("{id:int}"), Authorize(Roles = "Admin, HeadOfDepartment")]
+        public IActionResult UpdateStatus(int id, string status)
+        {
+            var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).First().Value;
+            if (userId == null)
+                return new ForbidResult();
+            var user = _userRepo.GetUser(Convert.ToInt32(userId));
+            if (user == null)
+                return new ForbidResult();
+
+            var doc = _docsRepo.GetDocument(id);
+            if (doc == null)
+                return View("AllDocs");
+
+            var role = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.Role).First().Value;
+            if (role == null)
+                return new ForbidResult();
+
+            if (role == "HeadOfDepartment" && doc.Author.DepartmentId != user.DepartmentId)
+                return new ForbidResult();
+
+            switch (status)
+            {
+                case "В разработке":
+                    doc.Status = Status.InDeveloping;
+                    break;
+                case "На рассмотрении":
+                    doc.Status = Status.OnConfirmation;
+                    break;
+                case "Готов":
+                    doc.Status = Status.Ready;
+                    break;
+            }
+
+            _docsRepo.UpdateDocumnet(doc);
+            return View("GetDocument", new DocumentAndUser(doc, user));
         }
 
         [HttpGet, Route("{id:int}/{fileId:int}")]
@@ -206,6 +270,5 @@ namespace Electronic_document_management.Controllers.Docs
             }
             return Redirect($"/docs/{id}");
         }
-
     }
 }

@@ -53,5 +53,28 @@ namespace Electronic_document_management.Services.RepositoryService.Repository
             db.Documents.Update(document);
             db.SaveChanges();
         }
+
+        public IEnumerable<Document> SearchDocumnets(string text)
+        {
+            return db.Documents
+                .Where(doc => EF.Functions.ToTsVector("russian", doc.Name + " " + doc.Description)
+                .Matches(text))
+                .Include(doc => doc.Author)
+                .Include(doc => doc.DocumentFiles)
+                .Include(doc => doc.Author.Department)
+                .ToList();
+        }
+
+        public IEnumerable<Document> SearchDocumnets(string text, int depId)
+        {
+            return db.Documents
+                .Where(doc => doc.Author.DepartmentId == depId && 
+                EF.Functions.ToTsVector("russian", doc.Name + " " + doc.Description)
+                .Matches(text))
+                .Include(doc => doc.Author)
+                .Include(doc => doc.DocumentFiles)
+                .Include(doc => doc.Author.Department)
+                .ToList();
+        }
     }
 }

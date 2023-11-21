@@ -1,24 +1,44 @@
-﻿@using Electronic_document_management.Models;
+﻿@using Electronic_document_management.ViewModels;
 @using System.Security.Claims
+@using Electronic_document_management.Models
 
-@model Document
+@model Electronic_document_management.ViewModels.Docs.DocumentAndUser
 @{
     ViewBag.Title = "Document page";
     Layout = "_Layout";
 }
 @{
-    if (Model.AuthorId.ToString() == User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+
+    if (Model.User.Role == Role.Admin 
+        || Model.User.Role == Role.HeadOfDepartment && Model.User.DepartmentId == Model.Doc.Author.DepartmentId)
     {
-        <a href="/docs/@Model.Id/add">Добавить новую версию</a>
+        <form asp-action="UpdateStatus" asp-controller="Docs" method="post" enctype="multipart/form-data">
+            <p>
+                <label>Выберите статус для документа</label>
+                <select name="status">
+                    <option>В разработке</option>
+                    <option>На рассмотрении</option>
+                    <option>Готов</option>
+                </select>
+            </p>
+            <input type="submit" value="Отправить" />
+        </form>
+    }
+}
+@{
+    if (Model.Doc.AuthorId == Model.User.Id)
+    {
+        <a href="/docs/@Model.Doc.Id/add">Добавить новую версию</a>
     }
 }
 
-<h3>@Model.Name</h3>
-Автор: <a href="/profile/@Model.Author.Id">@Model.Author.UserName</a>
-<br>Отдел: <a href="/groups/@Model.Author.DepartmentId">@Model.Author.Department.Name</a>
-<br>Дата создания документа: @Model.Created
-<br>Статус: @Model.Status
-<br>Последняя версия: @Model.Version
+<h3>@Model.Doc.Name</h3>
+Автор: <a href="/profile/@Model.Doc.Author.Id">@Model.Doc.Author.UserName</a>
+<br>Отдел: <a href="/groups/@Model.Doc.Author.DepartmentId">@Model.Doc.Author.Department.Name</a>
+<br>Дата создания документа: @Model.Doc.Created
+<br>Статус: @Model.Doc.Status
+<br>Последняя версия: @Model.Doc.Version
+<br>Описание: @Model.Doc.Description
 <table>
     <caption>История файлов документа</caption>
     <tr>
@@ -28,11 +48,11 @@
     </tr>
     @{
         int i = 0;
-        foreach (var file in Model.DocumentFiles)
+        foreach (var file in Model.Doc.DocumentFiles)
         {
             <tr>
                 <td>@(++i)</td>
-                <td><a href="/docs/@Model.Id/@file.Id">@file.Version</a></td>
+                <td><a href="/docs/@Model.Doc.Id/@file.Id">@file.Version</a></td>
                 <td>@file.TimeInsert</td>
             </tr>
         }
