@@ -40,6 +40,7 @@ namespace Electronic_document_management.Services.RepositoryService.Repository
         {
             return db.Files
                 .Include(f => f.Doc)
+                .Include(f => f.Doc.Author)
                 .FirstOrDefault(f => f.Id == fileId);
         }
     }
