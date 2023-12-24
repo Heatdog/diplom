@@ -7,6 +7,13 @@
 }
 
 <a href="docs/create">Добавить документ</a>
+<form asp-action="SearchDoc" asp-controller="Docs" method="post" enctype="multipart/form-data">
+    <p>
+        <label>Текст для поиска</label>
+        <input type="text" name="searchText" /><br>
+    </p>
+    <input type="submit" value="Поиск" />
+</form>
 <table>
     <caption>Документы</caption>
     <tr>

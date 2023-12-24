@@ -46,6 +46,10 @@ namespace Electronic_document_management.Services.Databases
                 .WithOne(file => file.Doc)
                 .HasForeignKey(file => file.DocId)
                 .IsRequired(true);
+            modelBuilder.Entity<Document>()
+                .HasIndex(doc => new { doc.Name, doc.Description })
+                .HasMethod("GIN")
+                .IsTsVectorExpressionIndex("russian");
 
             modelBuilder.Entity<DocumentFile>()
                 .Property(file => file.TimeInsert)
