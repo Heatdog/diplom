@@ -1,0 +1,32 @@
+services:
+  psp:
+    build: ./
+    entrypoint: dotnet ElectronicDocumentManagement.dll
+    ports:
+      - "5290:5290"
+    restart: always
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5290
+    command: dotnet ElectronicDocumentManagement.dll
+    depends_on:
+      - postgreSQL
+    networks:
+      - aspnetcore-network
+  postgreSQL:
+    image: postgres:latest
+    environment:
+      - PGUSER=postgres
+      - PGPASSWORD=1
+      - PGDATABASE=docsdb
+      - PGHOST=postgreSQL
+    ports:
+      - "5433:5432"
+    restart: always
+    networks:
+      - aspnetcore-network
+
+networks:
+  aspnetcore-network:
+    driver: bridge
+
+
