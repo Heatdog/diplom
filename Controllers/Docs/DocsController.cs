@@ -109,20 +109,15 @@ namespace Electronic_document_management.Controllers.Docs
                 return View("CreateDoc", new DocsMessage("Ошибка загрузки документа на сервер"));
             }
 
-            var fileGuid = Guid.NewGuid();
-            var path = Path.GetFullPath(Path.Combine(_env.WebRootPath, $"Files/{dep.Name}/{id}/{fileGuid}"));
-            var docFile = new DocumentFile(path, document);
+            var fileGuid = await _fileService.UploadFile(uploadedFile);
+            if (fileGuid == null){
+                 return View("CreateDoc", new DocsMessage("Ошибка загрузки документа на сервер"));
+            }
 
-            var uploadRes = _fileService.UploadFile(path, uploadedFile);
+            var docFile = new DocumentFile((Guid)fileGuid, document);
             var err = _fileRepo.InsertFile(docFile);
             if (err != Errors.None)
             {
-                return View("CreateDoc", new DocsMessage("Ошибка загрузки документа на сервер"));
-            }
-
-            if (!await uploadRes)
-            {
-                _fileRepo.RemoveFile(id.Value);
                 return View("CreateDoc", new DocsMessage("Ошибка загрузки документа на сервер"));
             }
 
@@ -195,7 +190,7 @@ namespace Electronic_document_management.Controllers.Docs
         }
 
         [HttpGet, Route("{id:int}/{fileId:int}")]
-        public IActionResult OpenFile(int id, int fileId) 
+        public async Task<IActionResult> OpenFile(int id, int fileId) 
         {
             var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).First().Value;
             if (userId == null)
@@ -214,8 +209,8 @@ namespace Electronic_document_management.Controllers.Docs
                 return new ForbidResult();
             }
 
-            var fileBytes = System.IO.File.ReadAllBytes(file.Path);
-            return File(fileBytes, "application/pdf");
+            var resFile = await _fileService.GetFile(file.FileID);
+            return resFile!;
         }
 
         [HttpGet, Route("{id:int}/add")]
@@ -238,7 +233,7 @@ namespace Electronic_document_management.Controllers.Docs
         }
 
         [HttpPost, Route("{id:int}/add")]
-        public IActionResult AddNewVersion(int id, IFormFile uploadedFile)
+        public async Task<IActionResult> AddNewVersion(int id, IFormFile uploadedFile)
         {
             var userId = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).First().Value;
             if (userId == null)
@@ -259,10 +254,12 @@ namespace Electronic_document_management.Controllers.Docs
 
             doc.Version++;
 
-            var fileGuid = Guid.NewGuid();
-            var path = Path.GetFullPath(Path.Combine(_env.WebRootPath, $"Files/{user.Department.Name}/{id}/{fileGuid}"));
-            var docFile = new DocumentFile(path, doc);
-            var uploadRes = _fileService.UploadFile(path, uploadedFile);
+            var uploadRes = await _fileService.UploadFile(uploadedFile);
+            if (uploadedFile == null){
+                return View("CreateDoc", new DocsMessage("Ошибка загрузки документа на сервер"));
+            }
+            
+            var docFile = new DocumentFile((Guid)uploadRes, doc);
             var err = _fileRepo.InsertFile(docFile);
             if (err != Errors.None)
             {

@@ -6,15 +6,15 @@ namespace Electronic_document_management.Models
     public class DocumentFile
     {
         public DocumentFile() { }
-        public DocumentFile(string path, Document doc) 
+        public DocumentFile(Guid fileID, Document doc) 
         {
-            Path = path;
+            FileID = fileID;
             Doc = doc;
             Version = doc.Version;
         }
         [Key]
         public int Id { get; set; }
-        public string Path { get; set; }
+        public Guid FileID { get; set; }
         public int Version { get; set; }
         public Document Doc { get; set; }
         [ForeignKey("Document")]

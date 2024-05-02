@@ -15,10 +15,9 @@ services:
   postgreSQL:
     image: postgres:latest
     environment:
-      - PGUSER=postgres
-      - PGPASSWORD=1
-      - PGDATABASE=docsdb
-      - PGHOST=postgreSQL
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1
+      - POSTGRES_DB=docsdb
     ports:
       - "5433:5432"
     restart: always
