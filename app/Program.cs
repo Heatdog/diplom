@@ -43,13 +43,19 @@ class Programm
         builder.Services.AddTransient<IDocumentRepository, DocumentRepository>();
         builder.Services.AddTransient<IFileRepository, FileRepository>();
         builder.Services.AddTransient<IFileService, FileService>();
+
+        builder.Services.AddCors(options => options.AddPolicy("CorsPolicy", 
+            builder => {
+                builder.WithOrigins("https://web_servers");
+            }
+        ));
         
         var app = builder.Build();
 
         app.UseAuthentication();
         app.UseAuthorization();
         
-        
+        app.UseCors("CorsPolicy");
 
         app.MapControllers();
 

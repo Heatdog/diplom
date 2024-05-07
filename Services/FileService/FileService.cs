@@ -1,5 +1,4 @@
-﻿using Electronic_document_management.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Electronic_document_management.Services.FileService
 {
@@ -19,16 +18,30 @@ namespace Electronic_document_management.Services.FileService
                 return null;
             }
 
-            var respone = await _authClient.PostAsJsonAsync(connection+"/insert", file);
+            using (var content = new MultipartFormDataContent()){
+                var fileStream = file.OpenReadStream();
+                content.Add(new StreamContent(fileStream), "file", file.FileName);
 
-            if (!respone.IsSuccessStatusCode){
-                return null;
+                var request = new HttpRequestMessage(HttpMethod.Post, connection+"/insert"){
+                    Content = content
+                };
+
+                var respone = await _authClient.SendAsync(request);
+
+                if (!respone.IsSuccessStatusCode){
+                    Console.WriteLine(respone.StatusCode);
+                    return null;
+                }
+                var id = await respone.Content.ReadAsStringAsync();
+
+                id = id[1..^1];
+                Console.WriteLine(id);
+
+                return new Guid(id);
             }
-            var id = await respone.Content.ReadAsStringAsync();
-            return Guid.Parse(id);
         }
 
-        public async Task<IActionResult?> GetFile(Guid id){
+        public async Task<byte[]?> GetFile(Guid id){
             string? connection = configs.GetConnectionString("FileServer");
             if (connection == null)
             {
@@ -42,7 +55,8 @@ namespace Electronic_document_management.Services.FileService
             }
 
             var bytes = await respone.Content.ReadAsByteArrayAsync();
-            return (IActionResult?)Results.File(bytes, "application/pdf");
+
+            return bytes;
         }
     }
 }

@@ -1,6 +1,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet AS base
 WORKDIR /app
 
+COPY "./cert" "/app/cert"
+
 FROM mcr.microsoft.com/dotnet/sdk AS build
 WORKDIR /src
 COPY ["ElectronicDocumentManagement.csproj", "/src"]

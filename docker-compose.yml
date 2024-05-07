@@ -1,17 +1,20 @@
 services:
-  psp:
+  backend:
     build: ./
     entrypoint: dotnet ElectronicDocumentManagement.dll
-    ports:
-      - "5290:5290"
     restart: always
     environment:
-      - ASPNETCORE_URLS=http://0.0.0.0:5290
+      - ASPNETCORE_URLS=https://backend:5290
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/cert
+      - PORT=5290
     command: dotnet ElectronicDocumentManagement.dll
     depends_on:
       - postgreSQL
     networks:
       - aspnetcore-network
+    deploy:
+      replicas: 1
+  
   postgreSQL:
     image: postgres:latest
     environment:
@@ -23,6 +26,18 @@ services:
     restart: always
     networks:
       - aspnetcore-network
+  
+  proxy:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./cert:/etc/nginx/cert
+    ports:
+      - "443:443"
+    networks:
+      - aspnetcore-network
+    depends_on:
+      - backend
 
 networks:
   aspnetcore-network:

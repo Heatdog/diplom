@@ -102,23 +102,23 @@ namespace Electronic_document_management.Controllers.Docs
 
             var dep = author.Department;
 
+            var fileGuid = await _fileService.UploadFile(uploadedFile);
+            if (fileGuid == null){
+                 return View("CreateDoc", new DocsMessage("Ошибка загрузки файла на файловый сервер"));
+            }
+
             var document = new Document(name, author, description);
             var id = _docsRepo.InsertDocument(document);
             if (id == null)
             {
-                return View("CreateDoc", new DocsMessage("Ошибка загрузки документа на сервер"));
-            }
-
-            var fileGuid = await _fileService.UploadFile(uploadedFile);
-            if (fileGuid == null){
-                 return View("CreateDoc", new DocsMessage("Ошибка загрузки документа на сервер"));
+                return View("CreateDoc", new DocsMessage("Ошибка создания документа на сервере"));
             }
 
             var docFile = new DocumentFile((Guid)fileGuid, document);
             var err = _fileRepo.InsertFile(docFile);
             if (err != Errors.None)
             {
-                return View("CreateDoc", new DocsMessage("Ошибка загрузки документа на сервер"));
+                return View("CreateDoc", new DocsMessage("Ошибка добавления документа на сервер"));
             }
 
             return Redirect("/docs");
@@ -210,7 +210,11 @@ namespace Electronic_document_management.Controllers.Docs
             }
 
             var resFile = await _fileService.GetFile(file.FileID);
-            return resFile!;
+            if (resFile == null)
+            {
+                return new ForbidResult();
+            }
+            return File(resFile, "application/pdf", file.Version.ToString());
         }
 
         [HttpGet, Route("{id:int}/add")]

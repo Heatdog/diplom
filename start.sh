@@ -1,1 +1,1 @@
-docker compose up --build psp
+docker compose up --build proxy
